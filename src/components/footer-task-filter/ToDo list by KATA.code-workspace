@@ -1,0 +1,18 @@
+{
+  "folders": [
+	{
+		"name": "ToDo list by KATA",
+		"path": "../../../../../ToDo list by KATA"
+	},
+	{
+		"name": "ToDo List",
+		"path": "../../../../../ToDo List"
+	},
+	{
+		"path": "../../../.."
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "ToDo list by KATA"
+  }
+}

@@ -1,0 +1,11 @@
+.completed {
+  color: #cdcdcd !important;
+  text-decoration: line-through;
+  transition: color 0.5s ease;
+}
+
+.usual {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.5s ease;
+}
