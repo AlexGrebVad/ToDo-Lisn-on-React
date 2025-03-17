@@ -9,13 +9,22 @@ import ClearCompleted from '../footer-clear-completed/footer-clear-completed'
 
 export default class TaskList extends React.Component {
   ArrayOfToDoList = () => {
-    const { todos, onDeleted, toggleDone } = this.props
+    const { todos, onDeleted, toggleDone, startTimer, stopTimer, todosList } = this.props
 
     return todos.map((elem) => {
       const { id, createdAt, ...item } = elem
       return (
         <li key={id}>
-          <Task {...item} createdAt={createdAt} onDeleted={onDeleted} toggleDone={toggleDone} id={id} />
+          <Task
+            {...item}
+            createdAt={createdAt}
+            onDeleted={onDeleted}
+            toggleDone={toggleDone}
+            id={id}
+            startTimer={startTimer}
+            stopTimer={stopTimer}
+            todosList={todosList}
+          />
         </li>
       )
     })

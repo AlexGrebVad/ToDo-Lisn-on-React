@@ -73,6 +73,7 @@ export default class NewTaskForm extends React.Component {
       done: false,
       id: this.maxId,
       createdAt: new Date(),
+      timeValue: null,
     }
 
     this.maxId += 1
@@ -80,6 +81,43 @@ export default class NewTaskForm extends React.Component {
     this.setState(({ todoData }) => ({
       todoData: [...todoData, newItem],
     }))
+  }
+
+  startTimer = (id) => {
+    this.setState(({ todoData }) => {
+      const updatedData = todoData.map((task) => {
+        if (task.id === id) {
+          if (task.intervalId) {
+            clearInterval(task.intervalId)
+          }
+
+          const intervalId = setInterval(() => {
+            this.setState(({ todoData }) => ({
+              todoData: todoData.map((t) => (t.id === id ? { ...t, timeValue: (t.timeValue || 0) + 1 } : t)),
+            }))
+          }, 1000)
+
+          return { ...task, intervalId, timeValue: task.timeValue || 0 }
+        }
+        return task
+      })
+
+      return { todoData: updatedData }
+    })
+  }
+
+  stopTimer = (id) => {
+    this.setState(({ todoData }) => {
+      const updatedData = todoData.map((task) => {
+        if (task.id === id && task.intervalId) {
+          clearInterval(task.intervalId)
+          return { ...task, intervalId: null }
+        }
+        return task
+      })
+
+      return { todoData: updatedData }
+    })
   }
 
   render() {
@@ -100,6 +138,8 @@ export default class NewTaskForm extends React.Component {
           allItem={() => this.setActiveTab('All')}
           activeTab={activeTab}
           deleteCompleted={this.deleteCompleted}
+          startTimer={this.startTimer}
+          stopTimer={this.stopTimer}
         />
       </>
     )

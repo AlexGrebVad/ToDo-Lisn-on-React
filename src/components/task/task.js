@@ -11,18 +11,25 @@ function Task({
   toggleDone = () => {},
   id = 0,
   createdAt = () => {},
+  startTimer = () => {},
+  stopTimer = () => {},
+  todosList = [],
 }) {
   return (
     <div className="view">
-      <input className="toggle" type="checkbox" onChange={() => toggleDone(id)} />
+      <input className="toggle" type="checkbox" onClick={() => stopTimer(id)} onChange={() => toggleDone(id)} />
+
       <TaskValueTime
         createdAt={createdAt}
         toggleDone={toggleDone}
         id={id}
         todoValue={label}
         activeClass={done ? 'completed' : 'usual'}
+        startTimer={startTimer}
+        stopTimer={stopTimer}
+        todosList={todosList}
       />
-      <TaskEditTools onDeleted={onDeleted} id={id} />
+      <TaskEditTools onDeleted={onDeleted} id={id} stopTimer={stopTimer} />
     </div>
   )
 }

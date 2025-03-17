@@ -3,6 +3,8 @@ import { formatDistanceToNow } from 'date-fns'
 import './task-value-time.css'
 import PropTypes from 'prop-types'
 
+import TimeTracker from '../time-tracker/time-tracker'
+
 class TaskValueTime extends Component {
   constructor(props) {
     super(props)
@@ -25,7 +27,7 @@ class TaskValueTime extends Component {
   }
 
   render() {
-    const { todoValue, activeClass, toggleDone, id } = this.props
+    const { todoValue, activeClass, toggleDone, id, startTimer, stopTimer, todosList } = this.props
     const { timeAgo } = this.state
     const space = ' '
 
@@ -35,6 +37,7 @@ class TaskValueTime extends Component {
         <span className={activeClass} onClick={() => toggleDone(id)}>
           {todoValue}
         </span>
+        <TimeTracker startTimer={startTimer} stopTimer={stopTimer} todosList={todosList} id={id} />
         <span className="created">
           created
           {space + timeAgo}

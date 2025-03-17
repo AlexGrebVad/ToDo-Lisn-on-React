@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-function TaskEditTools({ onDeleted = () => {}, id = 0 }) {
+function TaskEditTools({ onDeleted = () => {}, id = 0, stopTimer = () => {} }) {
   return (
     <>
       <button className="icon icon-edit" type="button" />
@@ -10,6 +10,7 @@ function TaskEditTools({ onDeleted = () => {}, id = 0 }) {
         type="button"
         onClick={() => {
           onDeleted(id)
+          stopTimer(id)
         }}
       />
     </>
