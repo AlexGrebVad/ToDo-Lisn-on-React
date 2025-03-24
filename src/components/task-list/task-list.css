@@ -29,7 +29,9 @@
 .todo-list li.editing .view {
   display: none;
 }
-
+.view {
+  position: relative;
+}
 .todo-list li .toggle {
   text-align: center;
   width: 40px;

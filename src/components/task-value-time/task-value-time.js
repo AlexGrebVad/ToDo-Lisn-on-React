@@ -27,7 +27,18 @@ class TaskValueTime extends Component {
   }
 
   render() {
-    const { todoValue, activeClass, toggleDone, id, startTimer, stopTimer, todosList } = this.props
+    const {
+      todoValue,
+      activeClass,
+      toggleDone,
+      id,
+      startTimer,
+      stopTimer,
+      todosList,
+      setTimeValue,
+      toggleEditMode,
+      editingStates,
+    } = this.props
     const { timeAgo } = this.state
     const space = ' '
 
@@ -37,7 +48,15 @@ class TaskValueTime extends Component {
         <span className={activeClass} onClick={() => toggleDone(id)}>
           {todoValue}
         </span>
-        <TimeTracker startTimer={startTimer} stopTimer={stopTimer} todosList={todosList} id={id} />
+        <TimeTracker
+          startTimer={startTimer}
+          stopTimer={stopTimer}
+          setTimeValue={setTimeValue}
+          todosList={todosList}
+          id={id}
+          toggleEditMode={toggleEditMode}
+          editingStates={editingStates}
+        />
         <span className="created">
           created
           {space + timeAgo}

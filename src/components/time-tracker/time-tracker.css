@@ -22,3 +22,7 @@
 button:hover {
   color: #af5b5e; /* Цвет при наведении */
 }
+
+.time-input {
+  width: 35px;
+}
