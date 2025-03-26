@@ -7,62 +7,87 @@ import ToDoCounter from '../footer-todo-counter/footer-todo-counter'
 import FooterTaskFilter from '../footer-task-filter/footer-task-filter'
 import ClearCompleted from '../footer-clear-completed/footer-clear-completed'
 
-export default class TaskList extends React.Component {
-  ArrayOfToDoList = () => {
-    const { todos, onDeleted, toggleDone } = this.props
+const TaskList = ({
+  todos,
+  onDeleted,
+  toggleDone,
+  startTimer,
+  stopTimer,
+  todosList,
+  toggleEditMode,
+  editingStates,
+  setTimeValue,
+  handleResetTimer,
+  setNewTaskValue,
+  itemLeftCounter,
+  activeItem,
+  completedItem,
+  allItem,
+  activeTab,
+  deleteCompleted,
+}) => {
+  const renderTasks = () =>
+    todos.map(({ id, createdAt, ...item }) => (
+      <li key={id}>
+        <Task
+          {...item}
+          createdAt={createdAt}
+          onDeleted={onDeleted}
+          toggleDone={toggleDone}
+          id={id}
+          startTimer={startTimer}
+          stopTimer={stopTimer}
+          todosList={todosList}
+          toggleEditMode={toggleEditMode}
+          editingStates={editingStates}
+          setTimeValue={setTimeValue}
+          handleResetTimer={handleResetTimer}
+          setNewTaskValue={setNewTaskValue}
+        />
+      </li>
+    ))
 
-    return todos.map((elem) => {
-      const { id, createdAt, ...item } = elem
-      return (
-        <li key={id}>
-          <Task {...item} createdAt={createdAt} onDeleted={onDeleted} toggleDone={toggleDone} id={id} />
-        </li>
-      )
-    })
-  }
-
-  render() {
-    const { itemLeftCounter, activeItem, completedItem, allItem, activeTab, deleteCompleted } = this.props
-    return (
-      <>
-        <section className="main">
-          <ul className="todo-list">{this.ArrayOfToDoList()}</ul>
-        </section>
-        <footer className="footer">
-          <ToDoCounter itemLeftCounter={itemLeftCounter} />
-          <FooterTaskFilter
-            activeItem={activeItem}
-            completedItem={completedItem}
-            allItem={allItem}
-            activeTab={activeTab}
-          />
-          <ClearCompleted deleteCompleted={deleteCompleted} />
-        </footer>
-      </>
-    )
-  }
+  return (
+    <>
+      <section className="main">
+        <ul className="todo-list">{renderTasks()}</ul>
+      </section>
+      <footer className="footer">
+        <ToDoCounter itemLeftCounter={itemLeftCounter} />
+        <FooterTaskFilter
+          activeItem={activeItem}
+          completedItem={completedItem}
+          allItem={allItem}
+          activeTab={activeTab}
+        />
+        <ClearCompleted deleteCompleted={deleteCompleted} />
+      </footer>
+    </>
+  )
 }
 
 TaskList.defaultProps = {
-  todos: () => {},
+  todos: [],
   toggleDone: () => {},
   onDeleted: () => {},
   itemLeftCounter: () => {},
   activeItem: () => {},
   completedItem: () => {},
   allItem: () => {},
-  activeTab: () => {},
+  activeTab: 'All',
   deleteCompleted: () => {},
 }
 
 TaskList.propTypes = {
-  todos: PropTypes.func,
+  todos: PropTypes.arrayOf(PropTypes.object),
   toggleDone: PropTypes.func,
   onDeleted: PropTypes.func,
   itemLeftCounter: PropTypes.func,
   activeItem: PropTypes.func,
   completedItem: PropTypes.func,
   allItem: PropTypes.func,
-  activeTab: PropTypes.func,
+  activeTab: PropTypes.string,
   deleteCompleted: PropTypes.func,
 }
+
+export default TaskList

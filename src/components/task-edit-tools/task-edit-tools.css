@@ -1,0 +1,12 @@
+.newTaskValue {
+  width: 542px;
+  height: 59px;
+  position: absolute;
+  top: -7px;
+  z-index: 5;
+  font-size: 24px;
+}
+.newTaskValueDisabled {
+  display: none;
+}
+

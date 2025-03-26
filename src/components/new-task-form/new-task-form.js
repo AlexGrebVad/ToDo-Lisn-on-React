@@ -1,53 +1,32 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 
 import TaskHeader from '../task-header/task-header'
 import TaskList from '../task-list/task-list'
 import './new-task-form.css'
 
-export default class NewTaskForm extends React.Component {
-  maxId = 100
+const NewTaskForm = () => {
+  const [todoData, setTodoData] = useState([])
+  const [activeTab, setActiveTab] = useState('All')
+  const [editingStates, setEditingStates] = useState({})
+  const intervals = useRef({})
+  let maxId = useRef(100)
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      todoData: [],
-      activeTab: 'All',
+  const itemLeftCounter = () => todoData.filter((el) => !el.done).length
+
+  const toggleDone = (id) => {
+    setTodoData((prevData) => prevData.map((task) => (task.id === id ? { ...task, done: !task.done } : task)))
+  }
+
+  const deleteItem = (id) => {
+    setTodoData((prevData) => prevData.filter((el) => el.id !== id))
+
+    if (intervals.current[id]) {
+      clearInterval(intervals.current[id])
+      delete intervals.current[id]
     }
   }
 
-  itemLeftCounter = () => {
-    const { todoData } = this.state
-    return todoData.filter((el) => el.done === false).length
-  }
-
-  toggleDone = (id) => {
-    this.setState(({ todoData }) => {
-      const index = todoData.findIndex((el) => el.id === id)
-      const oldItem = todoData[index]
-      const newItem = { ...oldItem, done: !oldItem.done }
-
-      return {
-        todoData: [...todoData.slice(0, index), newItem, ...todoData.slice(index + 1)],
-      }
-    })
-  }
-
-  deleteItem = (id) => {
-    this.setState(({ todoData }) => {
-      const deleteItem = todoData.findIndex((el) => el.id === id)
-      return {
-        todoData: todoData.toSpliced(deleteItem, 1),
-      }
-    })
-  }
-
-  setActiveTab = (tab) => {
-    this.setState({ activeTab: tab })
-  }
-
-  getFilteredTasks = () => {
-    const { todoData, activeTab } = this.state
-
+  const getFilteredTasks = () => {
     switch (activeTab) {
       case 'Active':
         return todoData.filter((task) => !task.done)
@@ -58,50 +37,97 @@ export default class NewTaskForm extends React.Component {
     }
   }
 
-  deleteCompleted = () => {
-    this.setState(({ todoData }) => {
-      const newTodoList = todoData.filter((element) => element.done === false)
-      return {
-        todoData: newTodoList,
-      }
-    })
+  const deleteCompleted = () => {
+    setTodoData((prevData) => prevData.filter((task) => !task.done))
   }
 
-  addItem = (text) => {
+  const addItem = (text) => {
     const newItem = {
       label: text,
       done: false,
-      id: this.maxId,
+      id: maxId.current++,
       createdAt: new Date(),
+      timeValue: 0,
     }
+    setTodoData((prevData) => [...prevData, newItem])
+  }
 
-    this.maxId += 1
+  const setTimeValue = (id, time) => {
+    setTodoData((prevData) => prevData.map((task) => (task.id === id ? { ...task, timeValue: time } : task)))
+  }
 
-    this.setState(({ todoData }) => ({
-      todoData: [...todoData, newItem],
+  const startTimer = (id) => {
+    if (intervals.current[id]) return
+
+    intervals.current[id] = setInterval(() => {
+      setTodoData((prevData) =>
+        prevData.map((task) => {
+          if (task.id === id && task.timeValue > 0) {
+            return { ...task, timeValue: task.timeValue - 1 }
+          }
+          if (task.id === id && task.timeValue === 0) {
+            clearInterval(intervals.current[id])
+            delete intervals.current[id]
+          }
+          return task
+        })
+      )
+    }, 1000)
+  }
+
+  const stopTimer = (id) => {
+    if (intervals.current[id]) {
+      clearInterval(intervals.current[id])
+      delete intervals.current[id]
+    }
+  }
+
+  const toggleEditMode = (id, isEditing, inputTime = '') => {
+    setEditingStates((prevState) => ({
+      ...prevState,
+      [id]: {
+        isEditing,
+        inputTime,
+      },
     }))
   }
 
-  render() {
-    const { activeTab, todoData } = this.state
-    const filteredTasks = this.getFilteredTasks()
-
-    return (
-      <>
-        <TaskHeader addItem={this.addItem} />
-        <TaskList
-          todosList={todoData}
-          todos={filteredTasks}
-          onDeleted={this.deleteItem}
-          toggleDone={this.toggleDone}
-          itemLeftCounter={this.itemLeftCounter}
-          activeItem={() => this.setActiveTab('Active')}
-          completedItem={() => this.setActiveTab('Completed')}
-          allItem={() => this.setActiveTab('All')}
-          activeTab={activeTab}
-          deleteCompleted={this.deleteCompleted}
-        />
-      </>
-    )
+  const handleResetTimer = (id) => {
+    stopTimer(id)
+    setTimeValue(id, 0)
   }
+
+  const setNewTaskValue = (id, todosList, newTaskValue = 'fuck') => {
+    setTodoData((prevData) => prevData.map((task) => (task.id === id ? { ...task, label: newTaskValue } : task)))
+  }
+
+  const filteredTasks = getFilteredTasks()
+
+  return (
+    <>
+      <TaskHeader addItem={addItem} />
+      <TaskList
+        key={activeTab}
+        todosList={todoData}
+        todos={filteredTasks}
+        onDeleted={deleteItem}
+        toggleDone={toggleDone}
+        itemLeftCounter={itemLeftCounter}
+        activeItem={() => setActiveTab('Active')}
+        completedItem={() => setActiveTab('Completed')}
+        allItem={() => setActiveTab('All')}
+        activeTab={activeTab}
+        deleteCompleted={deleteCompleted}
+        startTimer={startTimer}
+        stopTimer={stopTimer}
+        setTimeValue={setTimeValue}
+        toggleEditMode={toggleEditMode}
+        editingStates={editingStates}
+        handleResetTimer={handleResetTimer}
+        setNewTaskValue={setNewTaskValue}
+      />
+    </>
+  )
 }
+
+export default NewTaskForm

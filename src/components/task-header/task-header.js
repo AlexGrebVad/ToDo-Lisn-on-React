@@ -1,58 +1,42 @@
-import React from 'react'
-import './task-header.css'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import './task-header.css'
 
-export default class TaskHeader extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      label: '',
-    }
+const TaskHeader = ({ addItem }) => {
+  const [label, setLabel] = useState('')
+
+  const onLabelChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
-    const { addItem } = this.props
-    const { label } = this.state
 
     if (label.trim() === '') {
-      this.setState({
-        label: '',
-      })
+      setLabel('')
       return
     }
+
     addItem(label)
-
-    this.setState({
-      label: '',
-    })
+    setLabel('')
   }
 
-  render() {
-    const { label } = this.state
-    return (
-      <form className="header" onSubmit={this.onSubmit}>
-        <h1>Todos</h1>
-        <label htmlFor="taskInput">
-          ToDo
-          <input
-            id="taskInput"
-            className="new-todo"
-            placeholder="What needs to be done?"
-            type="text"
-            onChange={this.onLabelChange}
-            value={label}
-          />
-        </label>
-      </form>
-    )
-  }
+  return (
+    <form className="header" onSubmit={onSubmit}>
+      <h1>Todos</h1>
+      <label htmlFor="taskInput">
+        ToDo
+        <input
+          id="taskInput"
+          className="new-todo"
+          placeholder="What needs to be done?"
+          type="text"
+          onChange={onLabelChange}
+          value={label}
+        />
+      </label>
+    </form>
+  )
 }
 
 TaskHeader.defaultProps = {
@@ -62,3 +46,5 @@ TaskHeader.defaultProps = {
 TaskHeader.propTypes = {
   addItem: PropTypes.func,
 }
+
+export default TaskHeader

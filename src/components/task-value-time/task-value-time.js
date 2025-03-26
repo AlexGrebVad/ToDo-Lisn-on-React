@@ -1,47 +1,50 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
-import './task-value-time.css'
 import PropTypes from 'prop-types'
+import './task-value-time.css'
 
-class TaskValueTime extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      timeAgo: formatDistanceToNow(new Date(props.createdAt), { addSuffix: true }),
-    }
-  }
+import TimeTracker from '../time-tracker/time-tracker'
 
-  componentDidMount() {
-    const { createdAt } = this.props
-    this.intervalId = setInterval(() => {
-      this.setState({
-        timeAgo: formatDistanceToNow(new Date(createdAt), { addSuffix: true }),
-      })
+const TaskValueTime = ({
+  todoValue,
+  activeClass,
+  toggleDone,
+  id,
+  startTimer,
+  stopTimer,
+  todosList,
+  setTimeValue,
+  toggleEditMode,
+  editingStates,
+  createdAt,
+}) => {
+  const [timeAgo, setTimeAgo] = useState(formatDistanceToNow(new Date(createdAt), { addSuffix: true }))
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimeAgo(formatDistanceToNow(new Date(createdAt), { addSuffix: true }))
     }, 60000)
-  }
 
-  componentWillUnmount() {
-    clearInterval(this.intervalId)
-  }
+    return () => clearInterval(intervalId)
+  }, [createdAt])
 
-  render() {
-    const { todoValue, activeClass, toggleDone, id } = this.props
-    const { timeAgo } = this.state
-    const space = ' '
-
-    return (
-      // eslint-disable-next-line jsx-a11y/label-has-associated-control
-      <label>
-        <span className={activeClass} onClick={() => toggleDone(id)}>
-          {todoValue}
-        </span>
-        <span className="created">
-          created
-          {space + timeAgo}
-        </span>
-      </label>
-    )
-  }
+  return (
+    <label>
+      <span className={activeClass} onClick={() => toggleDone(id)}>
+        {todoValue}
+      </span>
+      <TimeTracker
+        startTimer={startTimer}
+        stopTimer={stopTimer}
+        setTimeValue={setTimeValue}
+        todosList={todosList}
+        id={id}
+        toggleEditMode={toggleEditMode}
+        editingStates={editingStates}
+      />
+      <span className="created">created {timeAgo}</span>
+    </label>
+  )
 }
 
 TaskValueTime.defaultProps = {
@@ -49,6 +52,7 @@ TaskValueTime.defaultProps = {
   activeClass: ' ',
   toggleDone: () => {},
   id: 0,
+  createdAt: new Date(),
 }
 
 TaskValueTime.propTypes = {
@@ -56,6 +60,13 @@ TaskValueTime.propTypes = {
   activeClass: PropTypes.string,
   toggleDone: PropTypes.func,
   id: PropTypes.number,
+  createdAt: PropTypes.instanceOf(Date),
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
+  todosList: PropTypes.array.isRequired,
+  setTimeValue: PropTypes.func.isRequired,
+  toggleEditMode: PropTypes.func.isRequired,
+  editingStates: PropTypes.object.isRequired,
 }
 
 export default TaskValueTime
