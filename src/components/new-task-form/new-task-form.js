@@ -7,7 +7,7 @@ import './new-task-form.css'
 const NewTaskForm = () => {
   const [todoData, setTodoData] = useState([])
   const [activeTab, setActiveTab] = useState('All')
-  const [editingStates, setEditingStates] = useState({})
+
   const intervals = useRef({})
   let maxId = useRef(100)
 
@@ -52,51 +52,6 @@ const NewTaskForm = () => {
     setTodoData((prevData) => [...prevData, newItem])
   }
 
-  const setTimeValue = (id, time) => {
-    setTodoData((prevData) => prevData.map((task) => (task.id === id ? { ...task, timeValue: time } : task)))
-  }
-
-  const startTimer = (id) => {
-    if (intervals.current[id]) return
-
-    intervals.current[id] = setInterval(() => {
-      setTodoData((prevData) =>
-        prevData.map((task) => {
-          if (task.id === id && task.timeValue > 0) {
-            return { ...task, timeValue: task.timeValue - 1 }
-          }
-          if (task.id === id && task.timeValue === 0) {
-            clearInterval(intervals.current[id])
-            delete intervals.current[id]
-          }
-          return task
-        })
-      )
-    }, 1000)
-  }
-
-  const stopTimer = (id) => {
-    if (intervals.current[id]) {
-      clearInterval(intervals.current[id])
-      delete intervals.current[id]
-    }
-  }
-
-  const toggleEditMode = (id, isEditing, inputTime = '') => {
-    setEditingStates((prevState) => ({
-      ...prevState,
-      [id]: {
-        isEditing,
-        inputTime,
-      },
-    }))
-  }
-
-  const handleResetTimer = (id) => {
-    stopTimer(id)
-    setTimeValue(id, 0)
-  }
-
   const setNewTaskValue = (id, todosList, newTaskValue = 'fuck') => {
     setTodoData((prevData) => prevData.map((task) => (task.id === id ? { ...task, label: newTaskValue } : task)))
   }
@@ -118,12 +73,6 @@ const NewTaskForm = () => {
         allItem={() => setActiveTab('All')}
         activeTab={activeTab}
         deleteCompleted={deleteCompleted}
-        startTimer={startTimer}
-        stopTimer={stopTimer}
-        setTimeValue={setTimeValue}
-        toggleEditMode={toggleEditMode}
-        editingStates={editingStates}
-        handleResetTimer={handleResetTimer}
         setNewTaskValue={setNewTaskValue}
       />
     </>

@@ -17,17 +17,12 @@ function Task({
   setTimeValue,
   toggleEditMode,
   editingStates,
-  handleResetTimer,
+
   setNewTaskValue,
 }) {
   return (
     <div className="view">
-      <input
-        className="toggle"
-        type="checkbox"
-        onClick={(() => stopTimer(id), () => handleResetTimer(id))}
-        onChange={() => toggleDone(id)}
-      />
+      <input className="toggle" type="checkbox" onChange={() => toggleDone(id)} />
 
       <TaskValueTime
         createdAt={createdAt}

@@ -3,19 +3,12 @@ import { formatDistanceToNow } from 'date-fns'
 import PropTypes from 'prop-types'
 import './task-value-time.css'
 
-import TimeTracker from '../time-tracker/time-tracker'
-
 const TaskValueTime = ({
   todoValue,
   activeClass,
   toggleDone,
   id,
-  startTimer,
-  stopTimer,
-  todosList,
-  setTimeValue,
-  toggleEditMode,
-  editingStates,
+
   createdAt,
 }) => {
   const [timeAgo, setTimeAgo] = useState(formatDistanceToNow(new Date(createdAt), { addSuffix: true }))
@@ -33,15 +26,7 @@ const TaskValueTime = ({
       <span className={activeClass} onClick={() => toggleDone(id)}>
         {todoValue}
       </span>
-      <TimeTracker
-        startTimer={startTimer}
-        stopTimer={stopTimer}
-        setTimeValue={setTimeValue}
-        todosList={todosList}
-        id={id}
-        toggleEditMode={toggleEditMode}
-        editingStates={editingStates}
-      />
+
       <span className="created">created {timeAgo}</span>
     </label>
   )

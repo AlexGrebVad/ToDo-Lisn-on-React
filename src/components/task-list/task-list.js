@@ -11,13 +11,7 @@ const TaskList = ({
   todos,
   onDeleted,
   toggleDone,
-  startTimer,
-  stopTimer,
   todosList,
-  toggleEditMode,
-  editingStates,
-  setTimeValue,
-  handleResetTimer,
   setNewTaskValue,
   itemLeftCounter,
   activeItem,
@@ -35,13 +29,7 @@ const TaskList = ({
           onDeleted={onDeleted}
           toggleDone={toggleDone}
           id={id}
-          startTimer={startTimer}
-          stopTimer={stopTimer}
           todosList={todosList}
-          toggleEditMode={toggleEditMode}
-          editingStates={editingStates}
-          setTimeValue={setTimeValue}
-          handleResetTimer={handleResetTimer}
           setNewTaskValue={setNewTaskValue}
         />
       </li>
